@@ -5,9 +5,7 @@ export default {
   earlyAccess: true,
   schema: path.join(__dirname, 'prisma', 'schema.prisma'),
 
-  migrate: {
-    async resolveUrl() {
-      return process.env.DATABASE_URL || 'file:./dev.db';
-    },
+  datasource: {
+    url: process.env.DATABASE_URL || 'file:./prisma/dev.db',
   },
 } satisfies PrismaConfig;
