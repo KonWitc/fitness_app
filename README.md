@@ -57,12 +57,7 @@ A full-stack fitness tracking application built with React, Node.js, and SQLite.
    # In the server directory
    cp .env.example .env
    npx prisma generate
-   npx prisma db push
-   ```
-
-5. **Seed the database (optional)**
-   ```bash
-   npx prisma db seed
+   npx prisma migrate dev --name init
    ```
 
 ### Running the Application
