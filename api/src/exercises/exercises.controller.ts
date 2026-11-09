@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -23,6 +24,7 @@ import { ExerciseEntity } from './exercise.entity.js';
 import { ExercisesService } from './exercises.service.js';
 
 @ApiTags('exercises')
+@ApiBearerAuth()
 @Controller('exercises')
 export class ExercisesController {
   constructor(private readonly exercises: ExercisesService) {}

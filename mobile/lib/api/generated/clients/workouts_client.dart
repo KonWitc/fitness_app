@@ -15,7 +15,6 @@ abstract class WorkoutsClient {
 
   @GET('/api/workouts')
   Future<List<WorkoutEntity>> findAll({
-    @Query('userId') String? userId,
     @Query('dateFrom') DateTime? dateFrom,
     @Query('dateTo') DateTime? dateTo,
   });

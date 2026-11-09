@@ -1,4 +1,5 @@
 import 'package:fitness_app/api/generated/models/exercise_entity.dart';
+import 'package:fitness_app/core/auth/token_store.dart';
 import 'package:fitness_app/features/exercises/exercises_page.dart';
 import 'package:fitness_app/features/exercises/exercises_providers.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ Widget _app(Future<List<ExerciseEntity>> Function(String? category) fetch) {
   return ProviderScope(
     retry: (_, _) => null,
     overrides: [
+      // The app bar's account menu reads the (empty) saved session.
+      secureStoreProvider.overrideWithValue(MemorySecureStore()),
       exercisesProvider.overrideWith(
         (ref) => fetch(ref.watch(categoryFilterProvider)),
       ),

@@ -2,17 +2,34 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/generated/fitness_api.dart';
+import 'auth/auth_controller.dart';
+import 'auth/auth_interceptor.dart';
+import 'auth/token_store.dart';
 import 'config.dart';
 
+BaseOptions get _options => BaseOptions(
+  baseUrl: apiBaseUrl,
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 15),
+);
+
 final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: apiBaseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
+  final dio = Dio(_options);
+  // Refresh calls bypass the interceptor, so they can never loop.
+  final refreshDio = Dio(_options);
+  dio.interceptors.add(
+    AuthInterceptor(
+      dio: dio,
+      refreshDio: refreshDio,
+      tokens: ref.watch(tokenStoreProvider),
+      onSessionExpired: () =>
+          ref.read(authControllerProvider.notifier).sessionExpired(),
     ),
   );
-  ref.onDispose(dio.close);
+  ref.onDispose(() {
+    dio.close();
+    refreshDio.close();
+  });
   return dio;
 });
 

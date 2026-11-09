@@ -15,9 +15,9 @@ const withExercises = {
 export class WorkoutsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll({ userId, dateFrom, dateTo }: QueryWorkoutsDto) {
+  findAll(userId: string, { dateFrom, dateTo }: QueryWorkoutsDto) {
     const where: Prisma.WorkoutWhereInput = {
-      ...(userId && { userId }),
+      userId,
       ...((dateFrom || dateTo) && {
         date: {
           ...(dateFrom && { gte: new Date(dateFrom) }),
@@ -33,9 +33,10 @@ export class WorkoutsService {
     });
   }
 
-  async findOne(id: string) {
-    const workout = await this.prisma.workout.findUnique({
-      where: { id },
+  /** Another user's workout is a 404, not a 403: it doesn't exist for this user. */
+  async findOne(userId: string, id: string) {
+    const workout = await this.prisma.workout.findFirst({
+      where: { id, userId },
       include: withExercises,
     });
     if (!workout) throw new NotFoundException('Workout not found');

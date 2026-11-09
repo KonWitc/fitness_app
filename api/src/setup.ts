@@ -20,6 +20,7 @@ export function createOpenApiDocument(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Fitness API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   // Operation ids become method names in the generated Dart client
   // (ExercisesClient.findAll), so drop the default "ExercisesController_" prefix.

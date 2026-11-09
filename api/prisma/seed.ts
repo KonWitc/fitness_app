@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { PasswordHasher } from '@nestjs/authentication';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 
@@ -119,7 +120,10 @@ const exercises = [
   },
 ];
 
+// Development-only account; never seed this into a real deployment.
 const DEMO_EMAIL = 'demo@fitness.local';
+const DEMO_PASSWORD = 'demo-password';
+const hasher = new PasswordHasher();
 
 async function seedExercises() {
   const existing = await prisma.exercise.count();
@@ -131,10 +135,22 @@ async function seedExercises() {
   console.log(`Seeded ${exercises.length} exercises.`);
 }
 
-/** A demo user with a little history, until real sign-up exists. */
+/** A demo account with a little history, for development. */
 async function seedDemoWorkouts() {
-  if (await prisma.user.findUnique({ where: { email: DEMO_EMAIL } })) {
-    console.log('Demo user exists, skipping workouts.');
+  const existing = await prisma.user.findUnique({
+    where: { email: DEMO_EMAIL },
+  });
+  if (existing) {
+    // Accounts from before auth hold a placeholder instead of a hash.
+    if (!existing.passwordHash.startsWith('$scrypt$')) {
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { passwordHash: await hasher.hash(DEMO_PASSWORD) },
+      });
+      console.log(`Demo user password set to "${DEMO_PASSWORD}".`);
+    } else {
+      console.log('Demo user exists, skipping workouts.');
+    }
     return;
   }
 
@@ -152,7 +168,7 @@ async function seedDemoWorkouts() {
     data: {
       email: DEMO_EMAIL,
       name: 'Demo User',
-      password: 'not-set', // replaced by a real hash once auth lands
+      passwordHash: await hasher.hash(DEMO_PASSWORD),
     },
   });
 
@@ -207,7 +223,9 @@ async function seedDemoWorkouts() {
     },
   });
 
-  console.log(`Seeded demo user ${DEMO_EMAIL} with 2 workouts.`);
+  console.log(
+    `Seeded demo user ${DEMO_EMAIL} / ${DEMO_PASSWORD} with 2 workouts.`
+  );
 }
 
 async function main() {

@@ -5,6 +5,7 @@
 import 'package:dio/dio.dart';
 
 import 'clients/health_client.dart';
+import 'clients/auth_client.dart';
 import 'clients/exercises_client.dart';
 import 'clients/workouts_client.dart';
 
@@ -20,10 +21,13 @@ class FitnessApi {
   static String get version => '1.0';
 
   HealthClient? _health;
+  AuthClient? _auth;
   ExercisesClient? _exercises;
   WorkoutsClient? _workouts;
 
   HealthClient get health => _health ??= HealthClient(_dio, baseUrl: _baseUrl);
+
+  AuthClient get auth => _auth ??= AuthClient(_dio, baseUrl: _baseUrl);
 
   ExercisesClient get exercises =>
       _exercises ??= ExercisesClient(_dio, baseUrl: _baseUrl);

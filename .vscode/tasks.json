@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Starts Postgres (docker-compose.yml) and waits until it is healthy.
+      // Docker Desktop must be running.
+      "label": "db: up",
+      "type": "shell",
+      "command": "docker compose up -d --wait",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}

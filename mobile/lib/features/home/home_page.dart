@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../auth/account_menu.dart';
 import '../../core/api.dart';
 import '../../core/config.dart';
 import '../../core/theme.dart';
@@ -17,7 +18,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fitness Tracker'),
-        actions: const [ThemeToggleButton()],
+        actions: const [ThemeToggleButton(), AccountMenuButton()],
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),

@@ -22,13 +22,11 @@ class _WorkoutsClient implements WorkoutsClient {
 
   @override
   Future<List<WorkoutEntity>> findAll({
-    String? userId,
     DateTime? dateFrom,
     DateTime? dateTo,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'userId': userId,
       r'dateFrom': dateFrom?.toIso8601String(),
       r'dateTo': dateTo?.toIso8601String(),
     };

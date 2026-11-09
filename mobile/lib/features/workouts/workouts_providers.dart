@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/generated/models/workout_entity.dart';
 import '../../core/api.dart';
+import '../../core/auth/auth_controller.dart';
 
-/// All workouts, newest first. Scoped to the signed-in user once auth exists.
-final workoutsProvider = FutureProvider<List<WorkoutEntity>>(
-  (ref) => ref.watch(apiProvider).workouts.findAll(),
-);
+/// The signed-in user's workouts, newest first (the API scopes them by token).
+final workoutsProvider = FutureProvider<List<WorkoutEntity>>((ref) {
+  ref.watch(currentUserIdProvider); // refetch when the account changes
+  return ref.watch(apiProvider).workouts.findAll();
+});

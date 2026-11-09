@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/generated/models/exercise_entity.dart';
+import '../auth/account_menu.dart';
 import '../../core/api.dart';
 import '../../core/theme.dart';
 import '../../widgets/async_states.dart';
@@ -21,7 +22,7 @@ class ExercisesPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Exercise Library'),
-        actions: const [ThemeToggleButton()],
+        actions: const [ThemeToggleButton(), AccountMenuButton()],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showExerciseForm(context),

@@ -4,6 +4,7 @@ import '../../api/generated/models/create_exercise_dto.dart';
 import '../../api/generated/models/exercise_entity.dart';
 import '../../api/generated/models/update_exercise_dto.dart';
 import '../../core/api.dart';
+import '../../core/auth/auth_controller.dart';
 
 /// Selected category chip; `null` means all.
 final categoryFilterProvider = NotifierProvider<CategoryFilter, String?>(
@@ -19,6 +20,7 @@ class CategoryFilter extends Notifier<String?> {
 
 /// Exercise list for the current filter. Re-fetches when the filter changes.
 final exercisesProvider = FutureProvider<List<ExerciseEntity>>((ref) {
+  ref.watch(currentUserIdProvider); // refetch when the account changes
   final category = ref.watch(categoryFilterProvider);
   return ref.watch(apiProvider).exercises.findAll(category: category);
 });

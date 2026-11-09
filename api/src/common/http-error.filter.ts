@@ -9,8 +9,10 @@ import {
 import type { Response } from 'express';
 
 /**
- * Every error response is `{ error: string }`, the contract the clients rely on.
- * Validation errors (an array of messages) are joined into one string.
+ * Every error response is `{ error: string, errorCode?: string }`, the
+ * contract the clients rely on. `error` is for people (validation messages
+ * are joined into one string); `errorCode` is for code, e.g. auth failures
+ * from @nestjs/authentication (`missing_credentials`, `invalid_token`, ...).
  */
 @Catch()
 export class HttpErrorFilter implements ExceptionFilter {
@@ -20,7 +22,11 @@ export class HttpErrorFilter implements ExceptionFilter {
     const res = host.switchToHttp().getResponse<Response>();
 
     if (exception instanceof HttpException) {
-      res.status(exception.getStatus()).json({ error: messageOf(exception) });
+      const errorCode = errorCodeOf(exception);
+      res.status(exception.getStatus()).json({
+        error: messageOf(exception),
+        ...(errorCode && { errorCode }),
+      });
       return;
     }
 
@@ -39,4 +45,13 @@ function messageOf(exception: HttpException): string {
   const message = (body as { message?: string | string[] }).message;
   if (Array.isArray(message)) return message.join(', ');
   return message ?? exception.message;
+}
+
+function errorCodeOf(exception: HttpException): string | undefined {
+  const body = exception.getResponse();
+  const code =
+    typeof body === 'object'
+      ? (body as { errorCode?: unknown }).errorCode
+      : undefined;
+  return typeof code === 'string' ? code : undefined;
 }

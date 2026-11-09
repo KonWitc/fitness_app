@@ -11,17 +11,43 @@ datasource db {
   provider = "postgresql"
 }
 
-// User model for authentication (future feature)
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique // stored trimmed + lowercase
+  name         String?
+  passwordHash String // scrypt, from @nestjs/authentication's PasswordHasher
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   workouts Workout[]
   goals    Goal[]
+}
+
+// Refresh tokens for the mobile app (RefreshTokenStore of @nestjs/authentication).
+// No foreign key to User on purpose: the store contract is user-agnostic, and
+// tokens of a deleted user are rejected anyway (JwtAuth finds no user).
+model RefreshToken {
+  id              String    @id // SHA-256 of the token, never the token itself
+  familyId        String
+  userId          String
+  createdAt       DateTime
+  expiresAt       DateTime
+  familyExpiresAt DateTime
+  usedAt          DateTime?
+  claims          Json?
+
+  @@index([familyId])
+  @@index([userId])
+  @@index([familyExpiresAt])
+}
+
+// A revoked family stays revoked, including for tokens saved after the revocation.
+model RevokedRefreshTokenFamily {
+  familyId  String    @id
+  revokedAt DateTime  @default(now())
+  expiresAt DateTime? // the family's absolute expiry, after which the row can go
+
+  @@index([expiresAt])
 }
 
 // Exercise library

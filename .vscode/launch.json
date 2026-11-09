@@ -2,7 +2,48 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Server (Express :3001)",
+      // NestJS in watch mode, debuggable (breakpoints work in src/*.ts).
+      // Reads api/.env. Starts Postgres first via the "db: up" task.
+      "name": "API (NestJS :3001)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev"],
+      "preLaunchTask": "db: up",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "sourceMaps": true,
+      "presentation": { "group": "1-app", "order": 1 }
+    },
+    {
+      // Flutter web in Chrome, with hot reload (r) and the Dart debugger.
+      // If the API runs on another port, add to toolArgs:
+      //   "--dart-define=API_BASE_URL=http://localhost:3002"
+      "name": "Flutter (Chrome)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/mobile",
+      "program": "lib/main.dart",
+      "deviceId": "chrome",
+      "toolArgs": [],
+      "presentation": { "group": "1-app", "order": 2 }
+    },
+    {
+      // Runs on the device picked in VS Code's status bar (emulator, phone,
+      // Windows...). The Android emulator reaches the API at 10.0.2.2 automatically.
+      "name": "Flutter (selected device)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/mobile",
+      "program": "lib/main.dart",
+      "toolArgs": [],
+      "presentation": { "group": "1-app", "order": 3 }
+    },
+
+    // ---- Old Express + React stack (until server/ and client/ are removed) ----
+    {
+      "name": "Legacy: Server (Express :3001)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/server",
@@ -11,37 +52,39 @@
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
       "sourceMaps": true,
-      "restart": true
+      "restart": true,
+      "presentation": { "group": "9-legacy" }
     },
     {
-      "name": "Client (Vite :5173)",
+      "name": "Legacy: Client (Vite :5173)",
       "type": "node-terminal",
       "request": "launch",
       "cwd": "${workspaceFolder}/client",
-      "command": "npm run dev"
-    },
-    {
-      "name": "Chrome (localhost:5173)",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/client"
+      "command": "npm run dev",
+      "presentation": { "group": "9-legacy" }
     }
   ],
   "compounds": [
     {
-      "name": "Full Stack",
-      "configurations": ["Server (Express :3001)", "Client (Vite :5173)"],
-      "stopAll": true
+      "name": "Full Stack: API + Flutter (Chrome)",
+      "configurations": ["API (NestJS :3001)", "Flutter (Chrome)"],
+      "stopAll": true,
+      "presentation": { "group": "0-full-stack", "order": 1 }
     },
     {
-      "name": "Full Stack + Chrome",
+      "name": "Full Stack: API + Flutter (selected device)",
+      "configurations": ["API (NestJS :3001)", "Flutter (selected device)"],
+      "stopAll": true,
+      "presentation": { "group": "0-full-stack", "order": 2 }
+    },
+    {
+      "name": "Legacy: Express + Vite",
       "configurations": [
-        "Server (Express :3001)",
-        "Client (Vite :5173)",
-        "Chrome (localhost:5173)"
+        "Legacy: Server (Express :3001)",
+        "Legacy: Client (Vite :5173)"
       ],
-      "stopAll": true
+      "stopAll": true,
+      "presentation": { "group": "9-legacy" }
     }
   ]
 }

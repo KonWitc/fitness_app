@@ -31,7 +31,7 @@ class FitnessApp extends ConsumerWidget {
       theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),
       themeMode: ref.watch(themeModeProvider),
-      routerConfig: router,
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }
