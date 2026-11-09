@@ -142,8 +142,8 @@ vite.config.ts.timestamp-*
 *.db
 *.db-journal
 
-# Prisma
-server/prisma/migrations/
 
 # Build outputs
 server/dist/
+# NestJS API: generated Prisma client
+api/src/generated/

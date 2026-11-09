@@ -27,6 +27,8 @@ model Exercise {
   description String?
   category    String   // e.g., "strength", "cardio", "flexibility"
   muscleGroup String?  // e.g., "chest", "back", "legs"
+  imageUrl    String?  // URL to an image showing the exercise
+  videoUrl    String?  // URL to a video (e.g. YouTube) showing the exercise
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -40,7 +42,7 @@ model Workout {
   date      DateTime @default(now())
   notes     String?
   duration  Int?     // in minutes
-  userId    String?
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

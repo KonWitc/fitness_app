@@ -1,0 +1,17 @@
+# Generates the typed API client from the NestJS OpenAPI spec.
+#   1. cd ../api && npm run openapi     (writes ./openapi.json)
+#   2. dart run swagger_parser
+#   3. dart run build_runner build -d
+swagger_parser:
+  schema_path: openapi.json
+  output_directory: lib/api/generated
+  name: fitness_api
+  language: dart
+  json_serializer: json_serializable
+  root_client: true
+  root_client_name: FitnessApi
+  put_clients_in_folder: true
+  put_in_folder: false
+  original_http_response: false
+  merge_clients: false
+  enums_to_json: false

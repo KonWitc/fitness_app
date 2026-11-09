@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import exerciseRoutes from './routes/exercises';
+import workoutRoutes from './routes/workouts';
 
 dotenv.config();
 
@@ -15,6 +17,10 @@ app.use(express.json());
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Routes
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/workouts', workoutRoutes);
 
 // Start server
 app.listen(PORT, () => {

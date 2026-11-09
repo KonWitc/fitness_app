@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Server (Express :3001)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "sourceMaps": true,
+      "restart": true
+    },
+    {
+      "name": "Client (Vite :5173)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/client",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Chrome (localhost:5173)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/client"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": ["Server (Express :3001)", "Client (Vite :5173)"],
+      "stopAll": true
+    },
+    {
+      "name": "Full Stack + Chrome",
+      "configurations": [
+        "Server (Express :3001)",
+        "Client (Vite :5173)",
+        "Chrome (localhost:5173)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
